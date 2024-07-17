@@ -54,6 +54,7 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 		return nil, err
 	}
 
+	//switch the different cases
 	switch packet.PacketType {
 	case TypeCommandResponsePacket:
 		var commandResponse CommandResponsePacket
