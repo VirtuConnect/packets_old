@@ -1,4 +1,4 @@
-module github.com/ff-derEchte/packets
+module github.com/VirtuConnect/packets
 
 go 1.22.2
 
