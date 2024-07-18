@@ -14,3 +14,13 @@ type TaskLaunchPacket struct {
 	Request string `json:"request"`
 	TaskId  string `json:"TaskId"`
 }
+
+func StatusPacket(request string, status string) *Packet {
+	return &Packet{
+		PacketType: TypeStatusResponsePacket,
+		Body: StatusResponsePacket{
+			Request: request,
+			Status:  status,
+		},
+	}
+}

@@ -5,6 +5,7 @@ const (
 	TypePlayAudioRequestPacket   = "PlayAudioRequest"
 	TypePlayYoutubeRequestPacket = "PlayYoutubeRequest"
 	TypeRunCommandRequestPacket  = "RunCommandRequest"
+	TypeStreamingRequestPacker   = "StreamingRequest"
 )
 
 type PlayVideoRequestPacket struct {
@@ -29,7 +30,7 @@ type RunCommandRequestPacket struct {
 	Command string `json:"command"`
 }
 
-type RequestStreamingPacket struct {
+type StreamingRequestPacket struct {
 	FrameRate int    `json:"frameRate"`
 	Channel   string `json:"channel"`
 }

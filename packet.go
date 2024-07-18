@@ -73,25 +73,56 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
 		}
 		result.Body = statusResponse
+	case TypeTaskLaunchPacket:
+		var launchPacket TaskLaunchPacket
+		err = json.Unmarshal(jsonData, &launchPacket)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = launchPacket
+	case TypePlayVideoRequestPacket:
+		var packet PlayVideoRequestPacket
+		err = json.Unmarshal(jsonData, &packet)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = packet
+	case TypePlayAudioRequestPacket:
+		var packet PlayAudioRequestPacket
+		err = json.Unmarshal(jsonData, &packet)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = packet
+	case TypePlayYoutubeRequestPacket:
+		var packet PlayYoutubeRequestPacket
+		err = json.Unmarshal(jsonData, &packet)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = packet
+	case TypeRunCommandRequestPacket:
+		var packet RunCommandRequestPacket
+		err = json.Unmarshal(jsonData, &packet)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = packet
+	case TypeErrorPacket:
+		var errorResponse ErrorPacket
+		err = json.Unmarshal(jsonData, &errorResponse)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to ErrorPacket: %w", err)
+		}
+		result.Body = errorResponse
 	default:
 		return nil, fmt.Errorf("invalid packet content type `%s`", packet.PacketType)
 	}
 	return result, nil
-}
-
-func ErrorPacket(reason string) *Packet {
-	return &Packet{
-		PacketType: TypeErrorPacket,
-		Body:       reason,
-	}
-}
-
-func StatusPacket(request string, status string) *Packet {
-	return &Packet{
-		PacketType: TypeStatusResponsePacket,
-		Body: StatusResponsePacket{
-			Request: request,
-			Status:  status,
-		},
-	}
 }
