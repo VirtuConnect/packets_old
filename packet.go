@@ -3,6 +3,8 @@ package packets
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/gorilla/websocket"
 )
 
 type Packet struct {
@@ -125,4 +127,33 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 		return nil, fmt.Errorf("invalid packet content type `%s`", packet.PacketType)
 	}
 	return result, nil
+}
+
+func ReadPacket(conn *websocket.Conn) (*Packet, error) {
+	var packet UnparsedPacket
+	if err := conn.ReadJSON(&packet); err != nil {
+		return nil, err
+	}
+	return ParsePacket(&packet)
+}
+
+type Status uint8
+
+const (
+	StatusSuccess = 0
+	StatusFailure = 1
+	StatusPending = 2
+)
+
+func ParseStatus(input string) (Status, error) {
+	switch input {
+	case "Success":
+		return StatusSuccess, nil
+	case "Failure":
+		return StatusFailure, nil
+	case "Pending":
+		return StatusPending, nil
+	default:
+		return 0, fmt.Errorf("invalid status code")
+	}
 }
