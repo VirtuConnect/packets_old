@@ -140,20 +140,37 @@ func ReadPacket(conn *websocket.Conn) (*Packet, error) {
 type Status uint8
 
 const (
-	StatusSuccess = 0
-	StatusFailure = 1
-	StatusPending = 2
+	StatusSuccess    = 0
+	StatusFailure    = 1
+	StatusPending    = 2
+	StatusNotFound   = 3
+	StatusNotAllowed = 4
 )
 
+var stringToStatus = map[string]Status{
+	"Success":    StatusSuccess,
+	"Failure":    StatusFailure,
+	"Pending":    StatusPending,
+	"NotFound":   StatusNotFound,
+	"NotAllowed": StatusNotAllowed,
+}
+
+var statusToString = []string{
+	"Success",
+	"Failure",
+	"Pending",
+	"NotFound",
+	"NotAllowed",
+}
+
 func ParseStatus(input string) (Status, error) {
-	switch input {
-	case "Success":
-		return StatusSuccess, nil
-	case "Failure":
-		return StatusFailure, nil
-	case "Pending":
-		return StatusPending, nil
-	default:
-		return 0, fmt.Errorf("invalid status code")
+	status, ok := stringToStatus[input]
+	if !ok {
+		return StatusFailure, fmt.Errorf("failed to parse status")
 	}
+	return status, nil
+}
+
+func (s Status) ToString() string {
+	return statusToString[s]
 }

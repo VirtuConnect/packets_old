@@ -3,13 +3,13 @@ package packets
 import "fmt"
 
 type CommandResponsePacket struct {
-	Content string `json:"content"`
-	Command string `json:"command"`
+	Content   string `json:"content"`
+	RequestId string `json:"requestId"`
 }
 
 type StatusResponsePacket struct {
-	Request string `json:"request"`
-	Status  string `json:"status"`
+	RequestId string `json:"requestId"`
+	Status    string `json:"status"`
 }
 
 type TaskLaunchPacket struct {
@@ -21,8 +21,8 @@ func StatusPacket(request string, status string) *Packet {
 	return &Packet{
 		PacketType: TypeStatusResponsePacket,
 		Body: StatusResponsePacket{
-			Request: request,
-			Status:  status,
+			RequestId: request,
+			Status:    status,
 		},
 	}
 }
