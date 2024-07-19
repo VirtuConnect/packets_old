@@ -154,14 +154,14 @@ func ParseRequestPacket(packet *UnparsedRequestPacket) (*RequestPacket, error) {
 	return &result, nil
 }
 
-func ParseResponsePacket(packet *UnparsedResponsePacket) (*ResponsePaket, error) {
+func ParseResponsePacket(packet *UnparsedResponsePacket) (*ResponsePacket, error) {
 	//convert the unparsed body into json
 	jsonData, err := json.Marshal(packet.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	var result = ResponsePaket{RequestId: packet.RequestId, Type: packet.Type}
+	var result = ResponsePacket{RequestId: packet.RequestId, Type: packet.Type}
 
 	switch packet.Type {
 	case TypeCommandResponsePacket:

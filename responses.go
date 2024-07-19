@@ -2,7 +2,7 @@ package packets
 
 import "fmt"
 
-type ResponsePaket struct {
+type ResponsePacket struct {
 	RequestId string      `json:"requestId"`
 	Type      string      `json:"type"`
 	Body      interface{} `json:"body"`
@@ -23,7 +23,7 @@ type TaskLaunchPacket struct {
 func StatusPacket(request string, status string) *Packet {
 	return &Packet{
 		PacketType: TypeStatusResponsePacket,
-		Body: ResponsePaket{
+		Body: ResponsePacket{
 			RequestId: request,
 			Body: StatusResponsePacket{
 				Status: status,
