@@ -26,6 +26,7 @@ const (
 	TypeTaskLaunchPacket      = "TaskLaunchPacket"
 	TypeErrorPacket           = "Error"
 	TypeResponsePacket        = "ResponsePacket"
+	TypeRequestPaket          = "RequestPacket"
 )
 
 var PacketReadingErrorPacket = Packet{
@@ -71,6 +72,50 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 			return nil, err
 		}
 		result.Body = body
+	case TypeRequestPaket:
+		var packet UnparsedRequestPacket
+		err = json.Unmarshal(jsonData, &packet)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to ResponsePacket: %w", err)
+		}
+		body, err := ParseRequestPacket(&packet)
+		if err != nil {
+			return nil, err
+		}
+		result.Body = body
+	case TypeErrorPacket:
+		var errorResponse ErrorPacket
+		err = json.Unmarshal(jsonData, &errorResponse)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to ErrorPacket: %w", err)
+		}
+		result.Body = errorResponse
+	default:
+		return nil, fmt.Errorf("invalid packet content type `%s`", packet.PacketType)
+	}
+	return result, nil
+}
+
+type UnparsedResponsePacket struct {
+	Type      string      `json:"type"`
+	RequestId string      `json:"requestId"`
+	Body      interface{} `json:"body"`
+}
+
+type UnparsedRequestPacket struct {
+	Type string      `json:"type"`
+	Body interface{} `json:"body"`
+}
+
+func ParseRequestPacket(packet *UnparsedRequestPacket) (*RequestPacket, error) {
+	jsonData, err := json.Marshal(packet.Body)
+	if err != nil {
+		return nil, err
+	}
+	var result = RequestPacket{Type: packet.Type}
+	switch packet.Type {
 	case TypePlayVideoRequestPacket:
 		var packet PlayVideoRequestPacket
 		err = json.Unmarshal(jsonData, &packet)
@@ -103,24 +148,10 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
 		}
 		result.Body = packet
-	case TypeErrorPacket:
-		var errorResponse ErrorPacket
-		err = json.Unmarshal(jsonData, &errorResponse)
-
-		if err != nil {
-			return nil, fmt.Errorf("error unmarshaling body to ErrorPacket: %w", err)
-		}
-		result.Body = errorResponse
 	default:
-		return nil, fmt.Errorf("invalid packet content type `%s`", packet.PacketType)
+		return nil, fmt.Errorf("invalid packet content type `%s`", packet.Type)
 	}
-	return result, nil
-}
-
-type UnparsedResponsePacket struct {
-	Type      string      `json:"type"`
-	RequestId string      `json:"requestId"`
-	Body      interface{} `json:"body"`
+	return &result, nil
 }
 
 func ParseResponsePacket(packet *UnparsedResponsePacket) (*ResponsePaket, error) {

@@ -10,6 +10,11 @@ const (
 	TypeTaskCancelRequest        = "TaskCancelRequest"
 )
 
+type RequestPacket struct {
+	Type string      `json:"type"`
+	Body interface{} `json:"body"`
+}
+
 type PlayVideoRequestPacket struct {
 	URL     string `json:"url"`
 	Volume  int    `json:"volume"`
