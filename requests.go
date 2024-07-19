@@ -6,6 +6,7 @@ const (
 	TypePlayYoutubeRequestPacket = "PlayYoutubeRequest"
 	TypeRunCommandRequestPacket  = "RunCommandRequest"
 	TypeStreamingRequestPacker   = "StreamingRequest"
+	TypeRequestActionTaskPacket  = "RequestActionTask"
 )
 
 type PlayVideoRequestPacket struct {
@@ -33,4 +34,10 @@ type RunCommandRequestPacket struct {
 type StreamingRequestPacket struct {
 	FrameRate int    `json:"frameRate"`
 	Channel   string `json:"channel"`
+}
+
+type RequestTaskActionPacket struct {
+	Task       string      `json:"task"`
+	ActionType string      `json:"actionType"`
+	Action     interface{} `json:"action"`
 }
