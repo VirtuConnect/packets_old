@@ -7,6 +7,7 @@ const (
 	TypeRunCommandRequestPacket  = "RunCommandRequest"
 	TypeStreamingRequestPacker   = "StreamingRequest"
 	TypeRequestActionTaskPacket  = "RequestActionTask"
+	TypeTaskCancelRequest        = "TaskCancelRequest"
 )
 
 type PlayVideoRequestPacket struct {
@@ -40,4 +41,8 @@ type RequestTaskActionPacket struct {
 	Task       string      `json:"task"`
 	ActionType string      `json:"actionType"`
 	Action     interface{} `json:"action"`
+}
+
+type TaskCancelRequest struct {
+	TaskId string `json:"taskId"`
 }

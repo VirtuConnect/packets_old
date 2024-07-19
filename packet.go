@@ -25,6 +25,7 @@ const (
 	TypeStatusResponsePacket  = "StatusResponse"
 	TypeTaskLaunchPacket      = "TaskLaunchPacket"
 	TypeErrorPacket           = "Error"
+	TypeResponsePacket        = "ResponsePacket"
 )
 
 var PacketReadingErrorPacket = Packet{
@@ -58,31 +59,18 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 
 	//switch the different cases
 	switch packet.PacketType {
-	case TypeCommandResponsePacket:
-		var commandResponse CommandResponsePacket
-		err = json.Unmarshal(jsonData, &commandResponse)
+	case TypeResponsePacket:
+		var packet UnparsedResponsePacket
+		err = json.Unmarshal(jsonData, &packet)
 
 		if err != nil {
-			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+			return nil, fmt.Errorf("error unmarshaling body to ResponsePacket: %w", err)
 		}
-
-		result.Body = commandResponse
-	case TypeStatusResponsePacket:
-		var statusResponse StatusResponsePacket
-		err = json.Unmarshal(jsonData, &statusResponse)
-
+		body, err := ParseResponsePacket(&packet)
 		if err != nil {
-			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+			return nil, err
 		}
-		result.Body = statusResponse
-	case TypeTaskLaunchPacket:
-		var launchPacket TaskLaunchPacket
-		err = json.Unmarshal(jsonData, &launchPacket)
-
-		if err != nil {
-			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
-		}
-		result.Body = launchPacket
+		result.Body = body
 	case TypePlayVideoRequestPacket:
 		var packet PlayVideoRequestPacket
 		err = json.Unmarshal(jsonData, &packet)
@@ -127,6 +115,53 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 		return nil, fmt.Errorf("invalid packet content type `%s`", packet.PacketType)
 	}
 	return result, nil
+}
+
+type UnparsedResponsePacket struct {
+	Type      string      `json:"type"`
+	RequestId string      `json:"requestId"`
+	Body      interface{} `json:"body"`
+}
+
+func ParseResponsePacket(packet *UnparsedResponsePacket) (*ResponsePaket, error) {
+	//convert the unparsed body into json
+	jsonData, err := json.Marshal(packet.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result = ResponsePaket{RequestId: packet.RequestId, Type: packet.Type}
+
+	switch packet.Type {
+	case TypeCommandResponsePacket:
+		var commandResponse CommandResponsePacket
+		err = json.Unmarshal(jsonData, &commandResponse)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+
+		result.Body = commandResponse
+	case TypeStatusResponsePacket:
+		var statusResponse StatusResponsePacket
+		err = json.Unmarshal(jsonData, &statusResponse)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = statusResponse
+	case TypeTaskLaunchPacket:
+		var launchPacket TaskLaunchPacket
+		err = json.Unmarshal(jsonData, &launchPacket)
+
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling body to CommandResponsePacket: %w", err)
+		}
+		result.Body = launchPacket
+	default:
+		return nil, fmt.Errorf("invalid packet content type `%s`", packet.Type)
+	}
+	return &result, nil
 }
 
 func ReadPacket(conn *websocket.Conn) (*Packet, error) {

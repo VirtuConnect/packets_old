@@ -2,27 +2,32 @@ package packets
 
 import "fmt"
 
+type ResponsePaket struct {
+	RequestId string      `json:"requestId"`
+	Type      string      `json:"type"`
+	Body      interface{} `json:"body"`
+}
+
 type CommandResponsePacket struct {
-	Content   string `json:"content"`
-	RequestId string `json:"requestId"`
+	Content string `json:"content"`
 }
 
 type StatusResponsePacket struct {
-	RequestId string `json:"requestId"`
-	Status    string `json:"status"`
+	Status string `json:"status"`
 }
 
 type TaskLaunchPacket struct {
-	Request string `json:"request"`
-	TaskId  string `json:"TaskId"`
+	TaskId string `json:"TaskId"`
 }
 
 func StatusPacket(request string, status string) *Packet {
 	return &Packet{
 		PacketType: TypeStatusResponsePacket,
-		Body: StatusResponsePacket{
+		Body: ResponsePaket{
 			RequestId: request,
-			Status:    status,
+			Body: StatusResponsePacket{
+				Status: status,
+			},
 		},
 	}
 }
