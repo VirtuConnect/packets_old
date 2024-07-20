@@ -149,7 +149,7 @@ func ParseRequestPacket(packet *UnparsedRequestPacket) (*RequestPacket, error) {
 		}
 		result.Body = packet
 	default:
-		return nil, fmt.Errorf("invalid packet content type `%s`", packet.Type)
+		return nil, fmt.Errorf("invalid packet content type (request) `%s`", packet.Type)
 	}
 	return &result, nil
 }
@@ -190,7 +190,7 @@ func ParseResponsePacket(packet *UnparsedResponsePacket) (*ResponsePacket, error
 		}
 		result.Body = launchPacket
 	default:
-		return nil, fmt.Errorf("invalid packet content type `%s`", packet.Type)
+		return nil, fmt.Errorf("invalid packet content type (response) `%s`", packet.Type)
 	}
 	return &result, nil
 }

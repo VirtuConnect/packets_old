@@ -25,6 +25,7 @@ func StatusPacket(request string, status string) *Packet {
 		PacketType: TypeResponsePacket,
 		Body: ResponsePacket{
 			RequestId: request,
+			Type:      TypeStatusResponsePacket,
 			Body: StatusResponsePacket{
 				Status: status,
 			},
