@@ -34,10 +34,12 @@ func StatusPacket(request string, status string) *Packet {
 }
 
 func GetStatusPacket(packet *Packet) (Status, error) {
-	if packet.PacketType != TypeStatusResponsePacket {
+	if packet.PacketType != TypeResponsePacket {
 		return StatusFailure, fmt.Errorf("packed %p is not status packet", packet)
 	}
-	return ParseStatus(packet.Body.(StatusResponsePacket).Status)
+	res, _ := packet.Body.(ResponsePacket)
+	pack, _ := res.Body.(StatusResponsePacket)
+	return ParseStatus(pack.Status)
 }
 
 func IsStatusSuccess(packet *Packet) (bool, error) {
