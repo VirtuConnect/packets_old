@@ -50,9 +50,10 @@ func IsStatusSuccess(packet *Packet) (bool, error) {
 }
 
 func GetResponsePacket(packet *Packet) (*CommandResponsePacket, error) {
-	if packet.PacketType != TypeCommandResponsePacket {
+	if packet.PacketType != TypeResponsePacket {
 		return nil, fmt.Errorf("provided packet is not a commandresponse packet")
 	}
-	commandRef, _ := packet.Body.(CommandResponsePacket)
+	ress, _ := packet.Body.(ResponsePacket)
+	commandRef, _ := ress.Body.(CommandResponsePacket)
 	return &commandRef, nil
 }
