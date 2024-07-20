@@ -206,11 +206,11 @@ func ReadPacket(conn *websocket.Conn) (*Packet, error) {
 type Status uint8
 
 const (
-	StatusSuccess    = 0
-	StatusFailure    = 1
-	StatusPending    = 2
-	StatusNotFound   = 3
-	StatusNotAllowed = 4
+	StatusSuccess    = Status(0)
+	StatusFailure    = Status(1)
+	StatusPending    = Status(2)
+	StatusNotFound   = Status(3)
+	StatusNotAllowed = Status(4)
 )
 
 var stringToStatus = map[string]Status{

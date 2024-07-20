@@ -22,7 +22,7 @@ type TaskLaunchPacket struct {
 
 func StatusPacket(request string, status string) *Packet {
 	return &Packet{
-		PacketType: TypeStatusResponsePacket,
+		PacketType: TypeResponsePacket,
 		Body: ResponsePacket{
 			RequestId: request,
 			Body: StatusResponsePacket{
