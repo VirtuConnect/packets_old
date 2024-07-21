@@ -20,14 +20,14 @@ type TaskLaunchPacket struct {
 	TaskId string `json:"TaskId"`
 }
 
-func StatusPacket(request string, status string) *Packet {
+func StatusPacket(request string, status Status) *Packet {
 	return &Packet{
 		PacketType: TypeResponsePacket,
 		Body: ResponsePacket{
 			RequestId: request,
 			Type:      TypeStatusResponsePacket,
 			Body: StatusResponsePacket{
-				Status: status,
+				Status: statusToString[status],
 			},
 		},
 	}
