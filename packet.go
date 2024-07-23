@@ -71,7 +71,7 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 		if err != nil {
 			return nil, err
 		}
-		result.Body = body
+		result.Body = *body
 	case TypeRequestPaket:
 		var packet UnparsedRequestPacket
 		err = json.Unmarshal(jsonData, &packet)
@@ -83,7 +83,7 @@ func ParsePacket(packet *UnparsedPacket) (*Packet, error) {
 		if err != nil {
 			return nil, err
 		}
-		result.Body = body
+		result.Body = *body
 	case TypeErrorPacket:
 		var errorResponse ErrorPacket
 		err = json.Unmarshal(jsonData, &errorResponse)
@@ -203,7 +203,7 @@ func ReadPacket(conn *websocket.Conn) (*Packet, error) {
 	return ParsePacket(&packet)
 }
 
-type Status uint8
+type Status int8
 
 const (
 	StatusSuccess    = Status(0)
@@ -221,12 +221,12 @@ var stringToStatus = map[string]Status{
 	"NotAllowed": StatusNotAllowed,
 }
 
-var statusToString = []string{
-	"Success",
-	"Failure",
-	"Pending",
-	"NotFound",
-	"NotAllowed",
+var statusToString = map[Status]string{
+	StatusSuccess:    "Success",
+	StatusFailure:    "Failure",
+	StatusPending:    "Pending",
+	StatusNotFound:   "NotFound",
+	StatusNotAllowed: "NotAllowed",
 }
 
 func ParseStatus(input string) (Status, error) {

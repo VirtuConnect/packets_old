@@ -35,10 +35,16 @@ func StatusPacket(request string, status Status) *Packet {
 
 func GetStatusPacket(packet *Packet) (Status, error) {
 	if packet.PacketType != TypeResponsePacket {
-		return StatusFailure, fmt.Errorf("packed %p is not status packet", packet)
+		return -1, fmt.Errorf("packed %p is not status packet", packet)
 	}
-	res, _ := packet.Body.(ResponsePacket)
-	pack, _ := res.Body.(StatusResponsePacket)
+	res, ok := packet.Body.(ResponsePacket)
+	if !ok {
+		return -1, fmt.Errorf("invalid sturcture (expected response packet)")
+	}
+	pack, ok := res.Body.(StatusResponsePacket)
+	if !ok {
+		return -1, fmt.Errorf("invalid sturcture (expected statusresponse packet)")
+	}
 	return ParseStatus(pack.Status)
 }
 
