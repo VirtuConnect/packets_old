@@ -1,5 +1,10 @@
 package packets
 
+type ClientMetaData struct {
+	HandShakeResponse
+	Id string `json:"id"`
+}
+
 type HandShakeResponse struct {
 	Username     string `json:"username"`
 	System       string `json:"system"`
